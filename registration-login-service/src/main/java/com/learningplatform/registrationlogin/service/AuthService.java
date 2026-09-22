@@ -8,7 +8,9 @@ import com.learningplatform.registrationlogin.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -37,8 +39,11 @@ public class AuthService {
 
 		userRepository.save(user);
 
-		String token = jwtUtil.generateToken(user.getEmail());
-		return new AuthResponse(token, "Signup successful");
+		List<String> roleNames = user.getRoles().stream().map(Enum::name).collect(Collectors.toList());
+		String token = jwtUtil.generateToken(user.getEmail(), roleNames, user.getFullName());
+
+		return new AuthResponse(token, "Signup successful", user.getEmail(), user.getFullName(),
+				user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
 	}
 
 	public AuthResponse login(LoginRequest request) {
@@ -52,8 +57,11 @@ public class AuthService {
 			return new AuthResponse(null, "Account is blocked");
 		}
 
-		String token = jwtUtil.generateToken(user.getEmail());
-		return new AuthResponse(token, "Login successful");
+		List<String> roleNames = user.getRoles().stream().map(Enum::name).collect(Collectors.toList());
+		String token = jwtUtil.generateToken(user.getEmail(), roleNames, user.getFullName());
+
+		return new AuthResponse(token, "Login successful", user.getEmail(), user.getFullName(),
+				user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
 	}
 
 	public String setBlockedStatus(String email, boolean blocked) {
@@ -62,5 +70,12 @@ public class AuthService {
 		user.setBlocked(blocked);
 		userRepository.save(user);
 		return blocked ? "User blocked" : "User unblocked";
+	}
+
+	public UserResponse getUserInfo(String email) {
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("User not found: " + email));
+		return new UserResponse(user.getEmail(), user.getFullName(),
+				user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
 	}
 }

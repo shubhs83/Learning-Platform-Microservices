@@ -2,40 +2,15 @@ package com.learningplatform.registrationlogin.dto;
 
 import java.util.Set;
 
-public class AuthResponse {
-	private String token;
-	private String message;
+public class UserResponse {
 	private String email;
 	private String fullName;
 	private Set<String> roles;
 
-	public AuthResponse(String token, String message) {
-		this.token = token;
-		this.message = message;
-	}
-
-	public AuthResponse(String token, String message, String email, String fullName, Set<String> roles) {
-		this.token = token;
-		this.message = message;
+	public UserResponse(String email, String fullName, Set<String> roles) {
 		this.email = email;
 		this.fullName = fullName;
 		this.roles = roles;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public String getEmail() {

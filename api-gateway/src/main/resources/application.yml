@@ -12,6 +12,31 @@ spring:
     gateway:
       server:
         webflux:
+
+          # =========================
+          # CORS CONFIGURATION
+          # =========================
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowedOrigins:
+                  - "http://localhost:5173"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                  - PATCH
+                allowedHeaders:
+                  - "*"
+                allowCredentials: true
+                maxAge: 3600
+
+          # =========================
+          # ROUTES
+          # =========================
           routes:
 
             - id: registration-login-service

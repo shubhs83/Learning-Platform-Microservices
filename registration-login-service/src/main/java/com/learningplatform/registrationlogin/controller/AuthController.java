@@ -1,15 +1,18 @@
 package com.learningplatform.registrationlogin.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learningplatform.registrationlogin.dto.AuthResponse;
 import com.learningplatform.registrationlogin.dto.LoginRequest;
 import com.learningplatform.registrationlogin.dto.SignupRequest;
+import com.learningplatform.registrationlogin.dto.UserResponse;
 import com.learningplatform.registrationlogin.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -42,5 +45,10 @@ public class AuthController {
 	@PutMapping("/admin/unblock/{email}")
 	public String unblockUser(@PathVariable String email) {
 		return authService.setBlockedStatus(email, false);
+	}
+
+	@GetMapping("/me")
+	public UserResponse me(@RequestHeader("X-User-Email") String email) {
+		return authService.getUserInfo(email);
 	}
 }
